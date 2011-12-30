@@ -1,9 +1,15 @@
+"""example1.py - demonstrates usage of Al5x with no servo_controller.
+
+With servo_controller == None, the Al5x instance will simply output what it's
+doing to stdout. This will continue to run through until the user hits ctrl-C.
+
+"""
 from robotarm.al5x import Al5x, AL5D
 from robotarm.controllers import Ssc32
 
 if __name__ == '__main__':
-    a = Al5x(AL5D, parked_state=dict(pos=(0, 10, 2.6), grip=-.4),
-             dt=0.010, avg_speed=15)
+    a = Al5x(AL5D, servo_controller=None, parked_state=dict(pos=(0, 10, 2.6),
+        grip=-.4), dt=0.010, avg_speed=15)
     try:
         raw_input("Press Enter to continue, ctrl-C to stop")
         c = 0

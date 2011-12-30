@@ -1,3 +1,8 @@
+"""example3.py - complex usage of Al5x with SSC-32 connected on /dev/ttyUSB0.
+
+This will continue to run through until the user hits ctrl-C.
+
+"""
 from robotarm.al5x import Al5x, AL5D
 from robotarm.controllers import Ssc32
 
@@ -42,7 +47,6 @@ try:
                 sleep(i['pause'])
             else:
                 r.move(i)
-            #raw_input("Press Enter to continue")
 
 except KeyboardInterrupt:
     r.park()
