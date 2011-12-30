@@ -1,4 +1,4 @@
-from pyVec import *
+from vector import *
 from constants import *
 from math import pi, radians, asin
 from nullServo import nullServo
