@@ -1,5 +1,5 @@
-from al5x import Al5x, AL5D
-from ssc32 import Ssc32
+from robotarm.al5x import Al5x, AL5D
+from robotarm.ssc32 import Ssc32
 
 if __name__ == '__main__':
     a = Al5x(AL5D, parked_state=dict(pos=(0,10,2.6), grip=-.4),

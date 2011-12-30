@@ -1,5 +1,5 @@
-from al5x import Al5x, AL5D
-from ssc32 import Ssc32
+from robotarm.al5x import Al5x, AL5D
+from robotarm.ssc32 import Ssc32
 
 s = Ssc32('/dev/ttyUSB0')
 s.trim(2, 0.025)
