@@ -1,7 +1,7 @@
 from al5x import Al5x, AL5D
-from ssc32 import ssc32
+from ssc32 import Ssc32
 
-s = ssc32('/dev/ttyUSB0')
+s = Ssc32('/dev/ttyUSB0')
 s.trim(2, 0.025)
 s.trim(3, -0.025)
 
