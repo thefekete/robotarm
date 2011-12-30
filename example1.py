@@ -1,11 +1,11 @@
-from al5x import al5x, AL5D
-from ssc32 import ssc32
+from al5x import Al5x, AL5D
+from ssc32 import Ssc32
 
-s = ssc32('/dev/ttyUSB0')
+s = Ssc32('/dev/ttyUSB0')
 s.trim(2, 0.025)
 s.trim(3, -0.025)
 
-r = al5x(AL5D, servo_controller=s)
+r = Al5x(AL5D, servo_controller=s)
 r.max_speed = 30
 r.acceleration = 75
 r.update_interval = 0.005

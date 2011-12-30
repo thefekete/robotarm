@@ -20,12 +20,12 @@ def print_cmd(cmd):
 
 
 
-class ssc32(serial.Serial):
+class Ssc32(serial.Serial):
     """Class to interface with Lynxmotion's SSC-32 Servo controller.
     All servo values should be given and will return as floats between
     -1 and 1 (representing 0 degrees and 180 degrees, respectively).
 
-    >>> s = ssc32(None)
+    >>> s = Ssc32(None)
     >>> s.trim(3, 0.05)
     >>> s.servo(0, 0.5)
     #0P2000
@@ -96,11 +96,6 @@ class ssc32(serial.Serial):
     def trim(self, channel, val):
         """Set the software offset for servo ch to val"""
         self.trims[channel] = val
-        
-
-
-
-
 
 
 if __name__ == '__main__':
@@ -109,4 +104,4 @@ if __name__ == '__main__':
     if doctest.testmod()[0] == 0:
         print "Passed all tests"
         print "=" * 75
-        print ssc32.__doc__
+        print Ssc32.__doc__

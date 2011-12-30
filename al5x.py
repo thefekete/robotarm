@@ -1,8 +1,34 @@
-from vector import *
-from constants import *
-from math import pi, radians, asin
-from nullServo import nullServo
+from vector import Vector, rotate, crossproduct, X, Y, Z, angle
+from math import pi, radians, sin, asin, cos, acos, sqrt
+from nullservo import NullServo
 from time import time, sleep
+
+
+# Robot arm beam vectors:
+# base to elbow, elbo to wrist, wrist to gripper_center
+AL5A    = ( [0.0, 0.0, 3.75], [0.0, 4.25, 0.0 ], [0.0, 3.0,  0.0 ] )
+AL5A_LW = ( [0.0, 0.0, 3.75], [0.0, 4.25, 0.0 ], [0.0, 4.13, 0.0 ] )
+AL5A_HD = ( [0.0, 0.0, 3.75], [0.0, 4.25, 0.0 ], [0.0, 3.5,  0.0 ] )
+AL5B    = ( [0.0, 0.0, 4.75], [0.0, 5.00, 0.0 ], [0.0, 3.0,  0.0 ] )
+AL5B_LW = ( [0.0, 0.0, 4.75], [0.0, 5.00, 0.0 ], [0.0, 4.13, 0.0 ] )
+AL5B_HD = ( [0.0, 0.0, 4.75], [0.0, 5.00, 0.0 ], [0.0, 3.5,  0.0 ] )
+AL5C    = ( [0.0, 0.0, 6.13], [0.0, 6.13, 0.0 ], [0.0, 3.0,  0.0 ] )
+AL5C_LW = ( [0.0, 0.0, 6.13], [0.0, 6.13, 0.0 ], [0.0, 4.13, 0.0 ] )
+AL5C_HD = ( [0.0, 0.0, 6.13], [0.0, 6.13, 0.0 ], [0.0, 3.5,  0.0 ] )
+AL5D    = ( [0.0, 0.0, 5.75], [0.0, 7.38, 0.0 ], [0.0, 3.0,  0.0 ] )
+AL5D_LW = ( [0.0, 0.0, 5.75], [0.0, 7.38, 0.0 ], [0.0, 4.13, 0.0 ] )
+AL5D_HD = ( [0.0, 0.0, 5.75], [0.0, 7.38, 0.0 ], [0.0, 3.5,  0.0 ] )
+# LW: with light-weight wrist rotate
+# HD: with heavy-duty wrist rotate
+
+SERVO_MAP = {
+        'base': 0,
+        'shoulder': 1,
+        'elbow': 2,
+        'wrist': 3,
+        'grip': 4,
+        'wrist_rotate': 5,
+        }
 
 
 # hack for python 2.5
@@ -11,7 +37,7 @@ sign = lambda x: +(x > 0) or -(x < 0)
 def trisss(abc):
     """Calculate the angles of a triangle given 3 sides [a,b,c]"""
     ABC = [0, 0, 0] # angles
-    
+
     # first we find the biggest side/angle to avoid obtuse errors
     l = 0 # index of the longest side
     for i in range(3):
@@ -43,20 +69,20 @@ def addDicts(lst):
     return c
 
 
-class al5x(object):
+class Al5x(object):
     """State format:
     { 'pos': [x,y,z], 'gripper_angle': degrees(from horizon),
       'grip': dist-open, 'wrist_rotate': degrees(from center)  }"""
 
-    def __init__(self, beams, servo_controller=nullServo(True),
+    def __init__(self, beams, servo_controller=NullServo(True),
                  parked_state=None, servo_map=None, avg_speed=15.0, dt=0.007):
 
         self.beams = dict(zip(['arm', 'forearm', 'gripper'],
-                              map(vector, beams)))
+                              map(Vector, beams)))
 
         if servo_controller is not None:
             self.sc = servo_controller
-        
+
         self.current_state = dict()
 
         # set up parked_state
@@ -85,13 +111,16 @@ class al5x(object):
     def get_state(self):
         return dict(self.current_state)
 
-
     def __zip_state(self, new_state):
-        """Combine new_state with existing state data to provide a full state dict"""
+        """Returns zipped state
+
+        Combine new_state with existing state data to provide a full state
+        dict
+
+        """
         state = dict(self.current_state)
         state.update(new_state)
         return state
-        
 
     def immediate_move(self, new_state, time=0):
         state = self.__zip_state(new_state)
@@ -101,30 +130,26 @@ class al5x(object):
         self.sc.servos(servos, time)
         self.current_state.update(state)
 
-
     def park(self):
         self.move(self.parked_state)
-
 
     def calc_grip(self, val):
         """Calculate grip servo value => dict(servo)"""
         return dict({self.servo_map['grip']: val})
 
-
     def set_grip(self, val):
         self.sc.servos(self.calc_grip(val))
         self.current_state.update(dict(grip=val))
-            
 
     def calc_pos(self, pos, grip_angle=0.0):
         """Calculate servo values for arm position => dict(servos)"""
-        position = vector(pos)
+        position = Vector(pos)
         grip_angle = float(grip_angle)
 ##        print "calc_pos() called with:"
 ##        print "\tpos:", position
 ##        print "\tgrip_angle:", grip_angle
         # unit vector translation of position on xy plane
-        xy_unit = vector(position.x, position.y, 0).unit
+        xy_unit = Vector(position.x, position.y, 0).unit
         # get a grip... vector
         gripper = (xy_unit * self.beams['gripper'].mag)
         # ... and rotate to angle specified
@@ -167,7 +192,7 @@ class al5x(object):
         ## Fix problem with fast short moves and slow long ones
         time = (time + sqrt(time*2))/2
         time = 2*sqrt(time)/3
-        
+
         num_slices = int( time / self.dt )
         if num_slices == 0:
             #raise ValueError, "dumbass too short"
@@ -176,13 +201,12 @@ class al5x(object):
             return ( dist*(1 - cos(pi*float(i)/(num_slices-1)))/2
                      for i in range(num_slices) ), num_slices
 
-
     def move(self, new_state):
         start_state = self.current_state
         end_state = self.__zip_state(new_state)
         # Position setup
-        start_pos = vector(start_state['pos'])
-        end_pos = vector(end_state['pos'])
+        start_pos = Vector(start_state['pos'])
+        end_pos = Vector(end_state['pos'])
         move = end_pos - start_pos
         # Grip angle setup
         start_ga = self.current_state['grip_angle']
@@ -229,8 +253,7 @@ class al5x(object):
 
 if __name__ == '__main__':
 
-    a = al5x(AL5D, parked_state=dict(pos=(0,8,3)), dt=0.010)
+    a = Al5x(AL5D, parked_state=dict(pos=(0,8,3)), dt=0.010)
     a.move(dict(pos=(-4,6,6), grip_angle=15.0, grip=0.0))
     a.move(dict(pos=(4,4,10), grip_angle=0.0, grip=0.5))
     a.park()
-    
