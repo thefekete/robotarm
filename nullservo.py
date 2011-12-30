@@ -16,7 +16,7 @@ def float2ms(f):
 
 
 
-class nullServo(object):
+class NullServo(object):
     """Class to immitate a servo controller for use with robotArm class.
     All servo values should be given and will return as floats between
     -1 and 1 (representing 0 degrees and 180 degrees, respectively)."""
@@ -77,13 +77,8 @@ class nullServo(object):
     def trim(self, channel, val):
         """Set the software offset for servo ch to val"""
         self.trims[channel] = val
-        
-
-
-
-
 
 
 if __name__ == '__main__':
     print "Null Servo Controller module"
-    s = nullServo(True)
+    s = NullServo(True)

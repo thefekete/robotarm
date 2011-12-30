@@ -1,7 +1,7 @@
 from vector import *
 from constants import *
 from math import pi, radians, asin
-from nullServo import nullServo
+from nullservo import NullServo
 from time import time, sleep
 
 
@@ -48,7 +48,7 @@ class Al5x(object):
     { 'pos': [x,y,z], 'gripper_angle': degrees(from horizon),
       'grip': dist-open, 'wrist_rotate': degrees(from center)  }"""
 
-    def __init__(self, beams, servo_controller=nullServo(True),
+    def __init__(self, beams, servo_controller=NullServo(True),
                  parked_state=None, servo_map=None, avg_speed=15.0, dt=0.007):
 
         self.beams = dict(zip(['arm', 'forearm', 'gripper'],
