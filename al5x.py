@@ -1,8 +1,34 @@
 from vector import Vector, rotate, crossproduct, X, Y, Z, angle
-from constants import AL5D, SERVO_MAP
 from math import pi, radians, sin, asin, cos, acos, sqrt
 from nullservo import NullServo
 from time import time, sleep
+
+
+# Robot arm beam vectors:
+# base to elbow, elbo to wrist, wrist to gripper_center
+AL5A    = ( [0.0, 0.0, 3.75], [0.0, 4.25, 0.0 ], [0.0, 3.0,  0.0 ] )
+AL5A_LW = ( [0.0, 0.0, 3.75], [0.0, 4.25, 0.0 ], [0.0, 4.13, 0.0 ] )
+AL5A_HD = ( [0.0, 0.0, 3.75], [0.0, 4.25, 0.0 ], [0.0, 3.5,  0.0 ] )
+AL5B    = ( [0.0, 0.0, 4.75], [0.0, 5.00, 0.0 ], [0.0, 3.0,  0.0 ] )
+AL5B_LW = ( [0.0, 0.0, 4.75], [0.0, 5.00, 0.0 ], [0.0, 4.13, 0.0 ] )
+AL5B_HD = ( [0.0, 0.0, 4.75], [0.0, 5.00, 0.0 ], [0.0, 3.5,  0.0 ] )
+AL5C    = ( [0.0, 0.0, 6.13], [0.0, 6.13, 0.0 ], [0.0, 3.0,  0.0 ] )
+AL5C_LW = ( [0.0, 0.0, 6.13], [0.0, 6.13, 0.0 ], [0.0, 4.13, 0.0 ] )
+AL5C_HD = ( [0.0, 0.0, 6.13], [0.0, 6.13, 0.0 ], [0.0, 3.5,  0.0 ] )
+AL5D    = ( [0.0, 0.0, 5.75], [0.0, 7.38, 0.0 ], [0.0, 3.0,  0.0 ] )
+AL5D_LW = ( [0.0, 0.0, 5.75], [0.0, 7.38, 0.0 ], [0.0, 4.13, 0.0 ] )
+AL5D_HD = ( [0.0, 0.0, 5.75], [0.0, 7.38, 0.0 ], [0.0, 3.5,  0.0 ] )
+# LW: with light-weight wrist rotate
+# HD: with heavy-duty wrist rotate
+
+SERVO_MAP = {
+        'base': 0,
+        'shoulder': 1,
+        'elbow': 2,
+        'wrist': 3,
+        'grip': 4,
+        'wrist_rotate': 5,
+        }
 
 
 # hack for python 2.5
