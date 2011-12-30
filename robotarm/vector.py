@@ -14,6 +14,7 @@ class Vector(tuple):
         return tuple.__new__(self, xyz)
 
     def __init__(self, *args):
+        """Initialize a Vector. Args should be x, y, and z values"""
         self.x = self[0]
         self.y = self[1]
         self.z = self[2]
@@ -100,17 +101,17 @@ class Vector(tuple):
 
 
 def dotproduct(v1, v2):
-    """Calculate the dot product between vectors v1 and v2 => float"""
+    """Calculate the dot product between vectors v1 and v2, returns a float"""
     return sum(map(operator.mul, v1, v2))
 
 
 def angle(v1, v2):
-    """Calculate the angle between vectors v1 and v2 => radians"""
+    """Calculate the angle between vectors v1 and v2 in radians"""
     return acos(dotproduct(v1, v2) / (v1.mag * v2.mag))
 
 
 def crossproduct(v1, v2):
-    """Calculate cross product between vectors v1 and v2 => vec()"""
+    """Calculate cross product between vectors v1 and v2, returns new vec()"""
     return Vector([
         (v1.y * v2.z - v1.z * v2.y),  # x component
         - (v1.x * v2.z - v1.z * v2.x),  # y component
@@ -120,7 +121,10 @@ def crossproduct(v1, v2):
 
 def rotate(v1, v2, theta):
     """Rotate vector v1 about v2 by the angle theta in radians.
-The right hand rule applies."""
+
+    The right hand rule applies.
+
+    """
     # Adapted from equations published by Glenn Murray - Thanks Glenn!!!
     # http://inside.mines.edu/~gmurray/ArbitraryAxisRotation/
     # ... ArbitraryAxisRotation.html
