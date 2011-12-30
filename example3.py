@@ -38,7 +38,7 @@ try:
     while True:
         raw_input("Press Enter to continue")
         for i in states:
-            if i.has_key('pause'):
+            if 'pause' in i:
                 sleep(i['pause'])
             else:
                 r.move(i)

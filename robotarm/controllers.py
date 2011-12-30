@@ -1,24 +1,27 @@
 from __future__ import print_function
 import serial
 
+
 def ms2float(ms):
     """Convert from ssc32 millisecond notation to an float (-1 to +1)"""
     if not 500 <= ms <= 2500 or not isinstance(ms, int):
-        raise ValueError, 'ms must be integer between 500 and 2500'
-    f = 2*((float(ms) - 500)/2000) - 1
+        raise ValueError('ms must be integer between 500 and 2500')
+    f = 2 * ((float(ms) - 500) / 2000) - 1
     return f
+
 
 def float2ms(f):
     """Convert from an float (-1 to +1) to ssc32 millisecond notation"""
     if not -1 <= f <= 1:
-        raise ValueError, 'f must be float between -1 and +1'
-    ms = ((float(f) + 1)/2)*2000 + 500
+        raise ValueError('f must be float between -1 and +1')
+    ms = ((float(f) + 1) / 2) * 2000 + 500
     return int(ms)
+
 
 def float2deg(f):
     """Return degrees"""
     if not -1 <= f <= 1:
-        raise ValueError, 'f must be float between -1 and +1'
+        raise ValueError('f must be float between -1 and +1')
     return f * 90 + 90
 
 
@@ -62,7 +65,7 @@ class Ssc32(serial.Serial):
     def servo(self, channel, val, speed=0):
         """Set servo channel to val(-1.0 to +1.0)"""
         cmd = '#' + str(channel) + 'P' \
-              + str(float2ms(val + self.trims.get(channel,0.0)))
+              + str(float2ms(val + self.trims.get(channel, 0.0)))
         if speed:
             cmd += 'S' + str(int(speed))
         self.write(cmd + '\r')
@@ -73,7 +76,7 @@ class Ssc32(serial.Serial):
         cmd = ''
         for ch, val in channel_dict.items():
             cmd += '#' + str(ch) + 'P' \
-              + str(float2ms(val + self.trims.get(ch,0.0)))
+              + str(float2ms(val + self.trims.get(ch, 0.0)))
         if time:
             cmd += 'T' + str(int(time * 1000))
         self.write(cmd + '\r')
@@ -87,7 +90,7 @@ class Ssc32(serial.Serial):
         """ Get values for a list of servos or return all servo
     positions for channels=None"""
         if isinstance(channels, (list, tuple)):
-            return dict([ (k, self.last_known.get(k)) for k in channels ])
+            return dict([(k, self.last_known.get(k)) for k in channels])
         else:
             return dict(self.last_known)
 
@@ -146,7 +149,7 @@ class NullServo(object):
     def servo(self, channel, val, speed=0):
         """Set servo channel to val(-1.0 to +1.0)"""
         cmd = ('#' + str(channel) + ': ' +
-               str(float2deg(val + self.trims.get(channel,0.0))) + 'deg')
+               str(float2deg(val + self.trims.get(channel, 0.0))) + 'deg')
         if speed:
             cmd += ', S' + str(int(speed))
         self.write(cmd)
@@ -157,7 +160,7 @@ class NullServo(object):
         cmd = ''
         for ch, val in channel_dict.items():
             cmd += ('#' + str(ch) + ': ' +
-               str(float2deg(val + self.trims.get(ch,0.0))) + 'deg' + '; ')
+               str(float2deg(val + self.trims.get(ch, 0.0))) + 'deg' + '; ')
         if time:
             cmd += 'T' + str(int(time * 1000))
         cmd = cmd.strip()
@@ -172,7 +175,7 @@ class NullServo(object):
         """ Get values for a list of servos or return all servo
     positions for channels=None"""
         if isinstance(channels, (list, tuple)):
-            return dict([ (k, self.last_known.get(k)) for k in channels ])
+            return dict([(k, self.last_known.get(k)) for k in channels])
         else:
             return dict(self.last_known)
 

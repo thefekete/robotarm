@@ -69,15 +69,16 @@ def trisss(abc):
         if abc[i] > abc[l]:
             l = i
     ABC[l] = acos(  # cosine rule
-        (abc[l-2]**2 + abc[l-1]**2 - abc[l]**2) / (2 * abc[l-2] * abc[l-1]))
-    ABC[l-1] = asin(abc[l-1] * sin(ABC[l]) / abc[l])  # sine rule
-    ABC[l-2] = pi - ABC[l-1] - ABC[l]
+        (abc[l - 2] ** 2 + abc[l - 1] ** 2 - abc[l] ** 2)
+         / (2 * abc[l - 2] * abc[l - 1]))
+    ABC[l - 1] = asin(abc[l - 1] * sin(ABC[l]) / abc[l])  # sine rule
+    ABC[l - 2] = pi - ABC[l - 1] - ABC[l]
     return ABC
 
 
 def rad2float(rad):
     """Convert radians to a float between -1 and +1 for servo control"""
-    return rad/(pi/2) - 1
+    return rad / (pi / 2) - 1
 
 
 def zip_dicts(lst):
@@ -207,7 +208,7 @@ class Al5x(object):
         servo_values[self.servo_map['shoulder']] = rad2float(
                 angle(xy_unit, arm))
         servo_values[self.servo_map['elbow']] = rad2float(angle(arm, forearm))
-        servo_values[self.servo_map['wrist']] = rad2float(pi/2 - angle(
+        servo_values[self.servo_map['wrist']] = rad2float(pi / 2 - angle(
                 forearm, gripper) * sign(forearm.unit.z - gripper.unit.z))
         return servo_values
 
@@ -220,15 +221,15 @@ class Al5x(object):
         """
         time = float(dist) / self.avg_speed
         ## Fix problem with fast short moves and slow long ones
-        time = (time + sqrt(time*2))/2
-        time = 2*sqrt(time)/3
+        time = (time + sqrt(time * 2)) / 2
+        time = 2 * sqrt(time) / 3
 
         num_slices = int(time / self.dt)
         if num_slices == 0:
             #raise ValueError, "dumbass too short"
             return iter([0]), 1
         else:
-            return (dist*(1 - cos(pi*float(i)/(num_slices-1)))/2
+            return (dist * (1 - cos(pi * float(i) / (num_slices - 1))) / 2
                      for i in range(num_slices)), num_slices
 
     def move(self, new_state):
@@ -254,11 +255,11 @@ class Al5x(object):
 
         # make positions generator
         g, slices = self.genslices(move.mag)
-        move_gen = ((move.unit*d + start_pos)
+        move_gen = ((move.unit * d + start_pos)
                      for d in g)
 
         # make grip angles generator
-        ga_gen = (float(s)/(slices-1)*delta_ga + start_ga
+        ga_gen = (float(s) / (slices - 1) * delta_ga + start_ga
                    for s in range(slices))
 
         # make wrist rotate generator
@@ -266,7 +267,7 @@ class Al5x(object):
         #           for s in range(slices) )
 
         # make grip val generator
-        g_gen = (float(s)/(slices-1)*delta_g + start_g
+        g_gen = (float(s) / (slices - 1) * delta_g + start_g
                   for s in range(slices))
 
         # Set Servo values
