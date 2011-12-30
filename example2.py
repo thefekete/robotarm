@@ -1,9 +1,9 @@
-from al5x import al5x, AL5D
+from al5x import Al5x, AL5D
 from ssc32 import ssc32
 
 if __name__ == '__main__':
 
-    a = al5x(AL5D, parked_state=dict(pos=(0,10,2.6), grip=-.4),
+    a = Al5x(AL5D, parked_state=dict(pos=(0,10,2.6), grip=-.4),
              dt=0.010, avg_speed=15,
              servo_controller=ssc32('/dev/ttyUSB0'))
     try:

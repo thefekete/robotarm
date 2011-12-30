@@ -11,7 +11,7 @@ sign = lambda x: +(x > 0) or -(x < 0)
 def trisss(abc):
     """Calculate the angles of a triangle given 3 sides [a,b,c]"""
     ABC = [0, 0, 0] # angles
-    
+
     # first we find the biggest side/angle to avoid obtuse errors
     l = 0 # index of the longest side
     for i in range(3):
@@ -43,7 +43,7 @@ def addDicts(lst):
     return c
 
 
-class al5x(object):
+class Al5x(object):
     """State format:
     { 'pos': [x,y,z], 'gripper_angle': degrees(from horizon),
       'grip': dist-open, 'wrist_rotate': degrees(from center)  }"""
@@ -56,7 +56,7 @@ class al5x(object):
 
         if servo_controller is not None:
             self.sc = servo_controller
-        
+
         self.current_state = dict()
 
         # set up parked_state
@@ -85,13 +85,16 @@ class al5x(object):
     def get_state(self):
         return dict(self.current_state)
 
-
     def __zip_state(self, new_state):
-        """Combine new_state with existing state data to provide a full state dict"""
+        """Returns zipped state
+
+        Combine new_state with existing state data to provide a full state
+        dict
+
+        """
         state = dict(self.current_state)
         state.update(new_state)
         return state
-        
 
     def immediate_move(self, new_state, time=0):
         state = self.__zip_state(new_state)
@@ -101,20 +104,16 @@ class al5x(object):
         self.sc.servos(servos, time)
         self.current_state.update(state)
 
-
     def park(self):
         self.move(self.parked_state)
-
 
     def calc_grip(self, val):
         """Calculate grip servo value => dict(servo)"""
         return dict({self.servo_map['grip']: val})
 
-
     def set_grip(self, val):
         self.sc.servos(self.calc_grip(val))
         self.current_state.update(dict(grip=val))
-            
 
     def calc_pos(self, pos, grip_angle=0.0):
         """Calculate servo values for arm position => dict(servos)"""
@@ -167,7 +166,7 @@ class al5x(object):
         ## Fix problem with fast short moves and slow long ones
         time = (time + sqrt(time*2))/2
         time = 2*sqrt(time)/3
-        
+
         num_slices = int( time / self.dt )
         if num_slices == 0:
             #raise ValueError, "dumbass too short"
@@ -175,7 +174,6 @@ class al5x(object):
         else:
             return ( dist*(1 - cos(pi*float(i)/(num_slices-1)))/2
                      for i in range(num_slices) ), num_slices
-
 
     def move(self, new_state):
         start_state = self.current_state
@@ -229,8 +227,7 @@ class al5x(object):
 
 if __name__ == '__main__':
 
-    a = al5x(AL5D, parked_state=dict(pos=(0,8,3)), dt=0.010)
+    a = Al5x(AL5D, parked_state=dict(pos=(0,8,3)), dt=0.010)
     a.move(dict(pos=(-4,6,6), grip_angle=15.0, grip=0.0))
     a.move(dict(pos=(4,4,10), grip_angle=0.0, grip=0.5))
     a.park()
-    
