@@ -1,11 +1,16 @@
-from robotArm import *
-from ssc32 import ssc32
+"""example3.py - complex usage of Al5x with SSC-32 connected on /dev/ttyUSB0.
 
-s = ssc32('/dev/ttyUSB0')
+This will continue to run through until the user hits ctrl-C.
+
+"""
+from robotarm.al5x import Al5x, AL5D
+from robotarm.controllers import Ssc32
+
+s = Ssc32('/dev/ttyUSB0')
 s.trim(2, 0.025)
 s.trim(3, -0.025)
 
-r = robotArm(AL5D, servo_controller=s)
+r = Al5x(AL5D, servo_controller=s)
 r.max_speed = 30
 r.acceleration = 75
 r.update_interval = 0.005
@@ -38,11 +43,10 @@ try:
     while True:
         raw_input("Press Enter to continue")
         for i in states:
-            if i.has_key('pause'):
+            if 'pause' in i:
                 sleep(i['pause'])
             else:
                 r.move(i)
-            #raw_input("Press Enter to continue")
 
 except KeyboardInterrupt:
     r.park()
