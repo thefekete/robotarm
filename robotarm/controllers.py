@@ -54,6 +54,12 @@ class Ssc32(serial.Serial):
     NUM_CHANNELS = 32
 
     def __init__(self, port=None, baud=115200):
+        """Initialize an Ssc32 instance
+
+        port should be a serial port connected to the SSC-32 unit
+        baud is the boudrate for the SSC-32 unit
+
+        """
         if port is None:
             # override write() method for testing, strip trailing \r's
             self.write = lambda x: print(x.strip())
@@ -87,16 +93,19 @@ class Ssc32(serial.Serial):
         return self.last_known.get(channel)
 
     def get_servos(self, channels=None):
-        """ Get values for a list of servos or return all servo
-    positions for channels=None"""
+        """ Get values for servos
+
+        If channels is a list, return values for those servos or return all
+        servo positions if channels == None
+
+        """
         if isinstance(channels, (list, tuple)):
             return dict([(k, self.last_known.get(k)) for k in channels])
         else:
             return dict(self.last_known)
 
     def center(self, channels=None):
-        """Center servos in channels list, or center all if
-    channels=None"""
+        """Center servos in channels list, or center all if channels=None"""
         d = dict()
         if channels is not None:
             d = d.fromkeys(channels, 0.0)
@@ -138,6 +147,12 @@ class NullServo(object):
     NUM_CHANNELS = 32
 
     def __init__(self, print_commands=True):
+        """Initialize an fake servo controller instance
+
+        If you don't want the instance to print out every command, set
+        print_commands to True.
+
+        """
         self.last_known = dict()
         self.trims = dict()
         self.print_commands = print_commands
