@@ -107,12 +107,14 @@ class Al5x(object):
         a.park()
 
     """
-    def __init__(self, beams, servo_controller=NullServo(True),
+    def __init__(self, beams, servo_controller=None,
                  parked_state=None, servo_map=None, avg_speed=15.0, dt=0.007):
         self.beams = dict(zip(['arm', 'forearm', 'gripper'],
                               map(Vector, beams)))
         if servo_controller is not None:
             self.sc = servo_controller
+        else:
+            self.sc = NullServo()
         self.current_state = dict()
 
         # set up parked_state
