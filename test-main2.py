@@ -1,5 +1,5 @@
-from al5x import *
-from ssc32 import *
+from al5x import al5x, AL5D
+from ssc32 import ssc32
 
 if __name__ == '__main__':
 
