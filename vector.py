@@ -2,7 +2,7 @@ import operator
 from math import sqrt, sin, cos, acos
 
 
-class vector(tuple):
+class Vector(tuple):
     """A simple vector class/type implementation"""
 
     def __new__(self, *args):
@@ -42,7 +42,7 @@ class vector(tuple):
 
     def __radd__(self, other):
         return self + other
-        
+
     # Subtraction Operators
     def __sub__(self, other):
         try:
@@ -112,7 +112,7 @@ def angle(v1, v2):
 
 def crossproduct(v1, v2):
     """Calculate cross product between vectors v1 and v2 => vec()"""
-    return vector([
+    return Vector([
         (v1.y*v2.z - v1.z*v2.y), # x component
         -(v1.x*v2.z - v1.z*v2.x), # y component
         (v1.x*v2.y - v1.y*v2.x) # z component
@@ -150,21 +150,21 @@ The right hand rule applies."""
             )
             / (u**2 + v**2 + w**2)
         )
-    return vector([newx,newy,newz])
+    return Vector([newx,newy,newz])
 
 
 # Some usefull vectors:
-X = vector(1, 0, 0)
-Y = vector(0, 1, 0)
-Z = vector(0, 0, 1)
+X = Vector(1, 0, 0)
+Y = Vector(0, 1, 0)
+Z = Vector(0, 0, 1)
 
 
 
 if __name__ == '__main__':
     from math import degrees, radians, pi
-    
-    v = vector(-2, 5, 6.4)
-    v2 = vector([1, 2, 3])
+
+    v = Vector(-2, 5, 6.4)
+    v2 = Vector([1, 2, 3])
     print "v.mag:", v.mag
     print "v.unit:", v.unit
     print "v + v1:", v + v2

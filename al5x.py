@@ -52,7 +52,7 @@ class Al5x(object):
                  parked_state=None, servo_map=None, avg_speed=15.0, dt=0.007):
 
         self.beams = dict(zip(['arm', 'forearm', 'gripper'],
-                              map(vector, beams)))
+                              map(Vector, beams)))
 
         if servo_controller is not None:
             self.sc = servo_controller
@@ -117,13 +117,13 @@ class Al5x(object):
 
     def calc_pos(self, pos, grip_angle=0.0):
         """Calculate servo values for arm position => dict(servos)"""
-        position = vector(pos)
+        position = Vector(pos)
         grip_angle = float(grip_angle)
 ##        print "calc_pos() called with:"
 ##        print "\tpos:", position
 ##        print "\tgrip_angle:", grip_angle
         # unit vector translation of position on xy plane
-        xy_unit = vector(position.x, position.y, 0).unit
+        xy_unit = Vector(position.x, position.y, 0).unit
         # get a grip... vector
         gripper = (xy_unit * self.beams['gripper'].mag)
         # ... and rotate to angle specified
@@ -179,8 +179,8 @@ class Al5x(object):
         start_state = self.current_state
         end_state = self.__zip_state(new_state)
         # Position setup
-        start_pos = vector(start_state['pos'])
-        end_pos = vector(end_state['pos'])
+        start_pos = Vector(start_state['pos'])
+        end_pos = Vector(end_state['pos'])
         move = end_pos - start_pos
         # Grip angle setup
         start_ga = self.current_state['grip_angle']
